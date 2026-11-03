@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    match /users/{userId} {
+      allow create: if signedIn() && request.auth.uid == userId
+        && request.resource.data.role == "student";
+      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+      // Students must not be able to promote themselves to admin.
+      allow update: if signedIn() && request.auth.uid == userId
+        && request.resource.data.role == resource.data.role;
+      allow delete: if isAdmin();
+    }
+
+    match /classrooms/{classroomId} {
+      allow read: if signedIn();
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}
