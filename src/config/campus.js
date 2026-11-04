@@ -1,8 +1,15 @@
 // IMPORTANT: Replace these sample coordinates with GPS coordinates collected at CST.
 // Do not submit the app with guessed building coordinates.
+// export const CAMPUS_CENTER = {
+//   latitude: 0, // TODO: replace with verified CST campus latitude
+//   longitude: 0, // TODO: replace with verified CST campus longitude
+//   latitudeDelta: 0.004,
+//   longitudeDelta: 0.004,
+// };
+
 export const CAMPUS_CENTER = {
-  latitude: 0, // TODO: replace with verified CST campus latitude
-  longitude: 0, // TODO: replace with verified CST campus longitude
+  latitude: 26.85113,
+  longitude: 89.39424,
   latitudeDelta: 0.004,
   longitudeDelta: 0.004,
 };

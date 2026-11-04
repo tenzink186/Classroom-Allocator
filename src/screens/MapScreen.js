@@ -33,11 +33,14 @@ export default function MapScreen({ route }) {
 
   useEffect(() => { locate(); }, []);
 
-  const initialRegion = current ? { ...current, latitudeDelta: 0.004, longitudeDelta: 0.004 } : CAMPUS_CENTER;
+  const initialRegion = CAMPUS_CENTER;
+
+  // const initialRegion = current ? { ...current, latitudeDelta: 0.004, longitudeDelta: 0.004 } : CAMPUS_CENTER;
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} initialRegion={initialRegion} showsUserLocation showsMyLocationButton>
+      <MapView style={styles.map} initialRegion={CAMPUS_CENTER} mapType="hybrid" showsUserLocation={true} showsMyLocationButton={true}>
+      {/* </MapView><MapView style={styles.map} initialRegion={initialRegion} showsUserLocation showsMyLocationButton> */}
         {current && <Marker coordinate={current} title="Your current location" pinColor="blue" />}
         {destination?.latitude != null && destination?.longitude != null &&
           <Marker coordinate={{ latitude: destination.latitude, longitude: destination.longitude }}
