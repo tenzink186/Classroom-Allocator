@@ -13,6 +13,7 @@ import SearchScreen from "./src/screens/SearchScreen";
 import ClassroomDetailsScreen from "./src/screens/ClassroomDetailsScreen";
 import MapScreen from "./src/screens/MapScreen";
 import AdminScreen from "./src/screens/AdminScreen";
+import ProfileScreen from "./src/screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,7 @@ function RootNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+
         {!user ? (
           <>
             <Stack.Screen
@@ -37,6 +39,7 @@ function RootNavigator() {
               component={LoginScreen}
               options={{ title: "ClassFind" }}
             />
+
             <Stack.Screen
               name="Register"
               component={RegisterScreen}
@@ -50,28 +53,39 @@ function RootNavigator() {
               component={HomeScreen}
               options={{ title: "ClassFind" }}
             />
+
             <Stack.Screen
               name="Search"
               component={SearchScreen}
               options={{ title: "Find a classroom" }}
             />
+
             <Stack.Screen
               name="Details"
               component={ClassroomDetailsScreen}
               options={{ title: "Classroom details" }}
             />
+
             <Stack.Screen
               name="Map"
               component={MapScreen}
               options={{ title: "Campus directions" }}
             />
+
             <Stack.Screen
               name="Admin"
               component={AdminScreen}
               options={{ title: "Classroom management" }}
             />
+
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{ headerShown: false }}
+            />
           </>
         )}
+
       </Stack.Navigator>
     </NavigationContainer>
   );

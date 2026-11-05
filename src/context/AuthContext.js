@@ -7,7 +7,12 @@ import React, {
 } from "react";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
+
 import { auth, db } from "../config/firebase";
 
 const AuthContext = createContext(null);
@@ -17,6 +22,7 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Listen for Firebase authentication changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       auth,
@@ -34,8 +40,10 @@ export function AuthProvider({ children }) {
               setProfile(snap.data());
             } else {
               setProfile({
+                name: "",
+                course: "",
                 role: "student",
-                email: firebaseUser.email,
+                email: firebaseUser.email || "",
               });
             }
           } else {
@@ -53,12 +61,36 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
+  // Update user profile in Firestore
+  const updateUserProfile = async (updatedData) => {
+    if (!user) {
+      throw new Error("User is not logged in.");
+    }
+
+    try {
+      const userRef = doc(db, "users", user.uid);
+
+      await setDoc(userRef, updatedData, { merge: true });
+
+      setProfile((previousProfile) => ({
+        ...previousProfile,
+        ...updatedData,
+      }));
+
+      return true;
+    } catch (error) {
+      console.error("Profile update error:", error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         profile,
         loading,
+        updateUserProfile,
       }}
     >
       {children}
