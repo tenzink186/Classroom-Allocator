@@ -1,19 +1,24 @@
 
 import React, { useEffect, useRef, useState } from "react";
+
 import {
   Alert,
   Linking,
   Text,
   View,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 
 import MapView, { Marker } from "react-native-maps";
+
 import PrimaryButton from "../components/PrimaryButton";
+
 import {
   CAMPUS_CENTER,
   CAMPUS_BUILDINGS,
 } from "../config/campus";
+
 import { getCurrentLocation } from "../services/locationService";
 
 export default function MapScreen({ route }) {
@@ -25,7 +30,7 @@ export default function MapScreen({ route }) {
 
   const mapRef = useRef(null);
 
-  // Get the student's current GPS location
+  // Get the student's actual location and readable address
   async function locate() {
     try {
       setLocating(true);
@@ -43,12 +48,12 @@ export default function MapScreen({ route }) {
     }
   }
 
-  // Automatically get the student's location when the map opens
+  // Get location automatically when map opens
   useEffect(() => {
     locate();
   }, []);
 
-  // Zoom to the selected classroom's building
+  // Zoom to the selected destination
   useEffect(() => {
     if (
       mapReady &&
@@ -67,7 +72,7 @@ export default function MapScreen({ route }) {
     }
   }, [mapReady, destination]);
 
-  // Open Google Maps with walking directions
+  // Open Google Maps walking directions
   async function directions() {
     if (
       !destination ||
@@ -81,9 +86,9 @@ export default function MapScreen({ route }) {
       return;
     }
 
-    // Make sure we have the student's current location
     let origin = current;
 
+    // Get current location if not already available
     if (!origin) {
       origin = await locate();
 
@@ -106,13 +111,15 @@ export default function MapScreen({ route }) {
     } catch (error) {
       Alert.alert(
         "Could not open directions",
-        "Please check that Google Maps or a web browser is available on your phone."
+        "Please check that Google Maps or a web browser is available."
       );
     }
   }
 
   return (
     <View style={styles.container}>
+
+      {/* Campus Map */}
       <MapView
         ref={mapRef}
         style={styles.map}
@@ -122,7 +129,8 @@ export default function MapScreen({ route }) {
         showsMyLocationButton={true}
         onMapReady={() => setMapReady(true)}
       >
-        {/* CST campus buildings */}
+
+        {/* CST Campus Buildings */}
         {CAMPUS_BUILDINGS.map((building) => (
           <Marker
             key={building.id}
@@ -135,16 +143,20 @@ export default function MapScreen({ route }) {
           />
         ))}
 
-        {/* Student's current location */}
+        {/* Student's Actual Location */}
         {current && (
           <Marker
-            coordinate={current}
-            title="Your current location"
+            coordinate={{
+              latitude: current.latitude,
+              longitude: current.longitude,
+            }}
+            title="Your Current Location"
+            description={current.address || "Current GPS location"}
             pinColor="blue"
           />
         )}
 
-        {/* Selected classroom destination */}
+        {/* Selected Classroom Destination */}
         {destination &&
           Number.isFinite(Number(destination.latitude)) &&
           Number.isFinite(Number(destination.longitude)) && (
@@ -158,27 +170,53 @@ export default function MapScreen({ route }) {
               pinColor="green"
             />
           )}
+
       </MapView>
 
+      {/* Information Panel */}
       <View style={styles.panel}>
+
         <Text style={styles.destination}>
           {destination
             ? `Destination: ${destination.classroomNumber} · ${destination.building}`
             : "CST Campus Map"}
         </Text>
 
-        <Text style={styles.hint}>
-          {current
-            ? "Your current GPS location is available."
-            : "Your current location has not been detected yet."}
-        </Text>
+        {/* Readable Current Location */}
+        <View style={styles.locationBox}>
+          <Text style={styles.locationTitle}>
+            <Text>📍 </Text>
+            Your Current Location
+          </Text>
 
+          {locating ? (
+            <View style={styles.loadingRow}>
+              <ActivityIndicator size="small" color="#17324D" />
+              <Text style={styles.locationText}>
+                Finding your location...
+              </Text>
+            </View>
+          ) : (
+            <Text style={styles.locationText}>
+              {current
+                ? current.address || "Address unavailable"
+                : "Location not detected. Please refresh."}
+            </Text>
+          )}
+        </View>
+
+        {/* Refresh Location */}
         <PrimaryButton
-          title={locating ? "Getting location..." : "Refresh my location"}
+          title={
+            locating
+              ? "Getting location..."
+              : "Refresh My Location"
+          }
           secondary
           onPress={locate}
         />
 
+        {/* Walking Directions */}
         {destination && (
           <PrimaryButton
             title="Get Walking Directions"
@@ -187,9 +225,10 @@ export default function MapScreen({ route }) {
         )}
 
         <Text style={styles.hint}>
-          Walking directions open in Google Maps. Indoor classroom
-          locations and floors are shown in classroom details.
+          Walking directions open in Google Maps.
+          Indoor classroom floors are shown in classroom details.
         </Text>
+
       </View>
     </View>
   );
@@ -205,22 +244,47 @@ const styles = StyleSheet.create({
   },
 
   panel: {
-    padding: 12,
-    backgroundColor: "#fff",
+    padding: 14,
+    backgroundColor: "#FFFFFF",
   },
 
   destination: {
     fontWeight: "700",
     fontSize: 16,
     color: "#17324D",
-    marginBottom: 4,
+    marginBottom: 10,
+  },
+
+  locationBox: {
+    backgroundColor: "#EAF2FF",
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+
+  locationTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#17324D",
+    marginBottom: 6,
+  },
+
+  locationText: {
+    fontSize: 14,
+    color: "#344054",
+    lineHeight: 21,
+  },
+
+  loadingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
 
   hint: {
     color: "#667085",
     fontSize: 12,
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 8,
     lineHeight: 18,
   },
 });
