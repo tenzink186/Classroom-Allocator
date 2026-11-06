@@ -1,65 +1,226 @@
-import React, { useEffect, useState } from "react";
-import { Alert, Text, View, StyleSheet } from "react-native";
-import MapView, { Marker, Polyline } from "react-native-maps";
+
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  Linking,
+  Text,
+  View,
+  StyleSheet,
+} from "react-native";
+
+import MapView, { Marker } from "react-native-maps";
 import PrimaryButton from "../components/PrimaryButton";
-import { CAMPUS_CENTER } from "../config/campus";
+import {
+  CAMPUS_CENTER,
+  CAMPUS_BUILDINGS,
+} from "../config/campus";
 import { getCurrentLocation } from "../services/locationService";
-import { getWalkingRoute } from "../services/directionsService";
 
 export default function MapScreen({ route }) {
   const destination = route.params?.destination;
+
   const [current, setCurrent] = useState(null);
-  const [routePoints, setRoutePoints] = useState([]);
-  const [busy, setBusy] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
+  const [locating, setLocating] = useState(false);
 
+  const mapRef = useRef(null);
+
+  // Get the student's current GPS location
   async function locate() {
-    try { const position = await getCurrentLocation(); setCurrent(position); }
-    catch (e) { Alert.alert("Location unavailable", e.message); }
-  }
-
-  async function directions() {
-    if (!destination || destination.latitude == null || destination.longitude == null) {
-      return Alert.alert("Destination not configured", "Ask the administrator to add accurate GPS coordinates for this classroom/building.");
-    }
     try {
-      setBusy(true);
-      const origin = current || await getCurrentLocation();
-      setCurrent(origin);
-      const points = await getWalkingRoute(origin, { latitude: destination.latitude, longitude: destination.longitude });
-      setRoutePoints(points);
-    } catch (e) { Alert.alert("Directions unavailable", e.message); }
-    finally { setBusy(false); }
+      setLocating(true);
+
+      const position = await getCurrentLocation();
+
+      setCurrent(position);
+
+      return position;
+    } catch (error) {
+      Alert.alert("Location unavailable", error.message);
+      return null;
+    } finally {
+      setLocating(false);
+    }
   }
 
-  useEffect(() => { locate(); }, []);
+  // Automatically get the student's location when the map opens
+  useEffect(() => {
+    locate();
+  }, []);
 
-  const initialRegion = CAMPUS_CENTER;
+  // Zoom to the selected classroom's building
+  useEffect(() => {
+    if (
+      mapReady &&
+      destination?.latitude != null &&
+      destination?.longitude != null
+    ) {
+      mapRef.current?.animateToRegion(
+        {
+          latitude: Number(destination.latitude),
+          longitude: Number(destination.longitude),
+          latitudeDelta: 0.002,
+          longitudeDelta: 0.002,
+        },
+        1000
+      );
+    }
+  }, [mapReady, destination]);
 
-  // const initialRegion = current ? { ...current, latitudeDelta: 0.004, longitudeDelta: 0.004 } : CAMPUS_CENTER;
+  // Open Google Maps with walking directions
+  async function directions() {
+    if (
+      !destination ||
+      !Number.isFinite(Number(destination.latitude)) ||
+      !Number.isFinite(Number(destination.longitude))
+    ) {
+      Alert.alert(
+        "Destination unavailable",
+        "This classroom does not have valid GPS coordinates."
+      );
+      return;
+    }
+
+    // Make sure we have the student's current location
+    let origin = current;
+
+    if (!origin) {
+      origin = await locate();
+
+      if (!origin) {
+        return;
+      }
+    }
+
+    const latitude = Number(destination.latitude);
+    const longitude = Number(destination.longitude);
+
+    const url =
+      "https://www.google.com/maps/dir/?api=1" +
+      `&origin=${origin.latitude},${origin.longitude}` +
+      `&destination=${latitude},${longitude}` +
+      "&travelmode=walking";
+
+    try {
+      await Linking.openURL(url);
+    } catch (error) {
+      Alert.alert(
+        "Could not open directions",
+        "Please check that Google Maps or a web browser is available on your phone."
+      );
+    }
+  }
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} initialRegion={CAMPUS_CENTER} mapType="hybrid" showsUserLocation={true} showsMyLocationButton={true}>
-      {/* </MapView><MapView style={styles.map} initialRegion={initialRegion} showsUserLocation showsMyLocationButton> */}
-        {current && <Marker coordinate={current} title="Your current location" pinColor="blue" />}
-        {destination?.latitude != null && destination?.longitude != null &&
-          <Marker coordinate={{ latitude: destination.latitude, longitude: destination.longitude }}
-            title={destination.classroomNumber} description={destination.building} />}
-        {routePoints.length > 0 && <Polyline coordinates={routePoints} strokeWidth={5} strokeColor="#1677D2" />}
+      <MapView
+        ref={mapRef}
+        style={styles.map}
+        initialRegion={CAMPUS_CENTER}
+        mapType="hybrid"
+        showsUserLocation={true}
+        showsMyLocationButton={true}
+        onMapReady={() => setMapReady(true)}
+      >
+        {/* CST campus buildings */}
+        {CAMPUS_BUILDINGS.map((building) => (
+          <Marker
+            key={building.id}
+            coordinate={{
+              latitude: building.latitude,
+              longitude: building.longitude,
+            }}
+            title={building.name}
+            description="CST Campus Building"
+          />
+        ))}
+
+        {/* Student's current location */}
+        {current && (
+          <Marker
+            coordinate={current}
+            title="Your current location"
+            pinColor="blue"
+          />
+        )}
+
+        {/* Selected classroom destination */}
+        {destination &&
+          Number.isFinite(Number(destination.latitude)) &&
+          Number.isFinite(Number(destination.longitude)) && (
+            <Marker
+              coordinate={{
+                latitude: Number(destination.latitude),
+                longitude: Number(destination.longitude),
+              }}
+              title={destination.classroomNumber}
+              description={destination.building}
+              pinColor="green"
+            />
+          )}
       </MapView>
+
       <View style={styles.panel}>
-        <Text style={styles.destination}>{destination ? `Destination: ${destination.classroomNumber} · ${destination.building}` : "CST Campus Map"}</Text>
-        <PrimaryButton title="Refresh my location" secondary onPress={locate} />
-        {destination && <PrimaryButton title="Show walking route" onPress={directions} loading={busy} />}
-        <Text style={styles.hint}>Outdoor routing only. Indoor classroom floors are shown in classroom details.</Text>
+        <Text style={styles.destination}>
+          {destination
+            ? `Destination: ${destination.classroomNumber} · ${destination.building}`
+            : "CST Campus Map"}
+        </Text>
+
+        <Text style={styles.hint}>
+          {current
+            ? "Your current GPS location is available."
+            : "Your current location has not been detected yet."}
+        </Text>
+
+        <PrimaryButton
+          title={locating ? "Getting location..." : "Refresh my location"}
+          secondary
+          onPress={locate}
+        />
+
+        {destination && (
+          <PrimaryButton
+            title="Get Walking Directions"
+            onPress={directions}
+          />
+        )}
+
+        <Text style={styles.hint}>
+          Walking directions open in Google Maps. Indoor classroom
+          locations and floors are shown in classroom details.
+        </Text>
       </View>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  map: { flex: 1 },
-  panel: { padding: 12, backgroundColor: "#fff" },
-  destination: { fontWeight: "700", color: "#17324D", marginBottom: 4 },
-  hint: { color: "#667085", fontSize: 12, marginTop: 5 },
+  container: {
+    flex: 1,
+  },
+
+  map: {
+    flex: 1,
+  },
+
+  panel: {
+    padding: 12,
+    backgroundColor: "#fff",
+  },
+
+  destination: {
+    fontWeight: "700",
+    fontSize: 16,
+    color: "#17324D",
+    marginBottom: 4,
+  },
+
+  hint: {
+    color: "#667085",
+    fontSize: 12,
+    marginTop: 5,
+    marginBottom: 5,
+    lineHeight: 18,
+  },
 });

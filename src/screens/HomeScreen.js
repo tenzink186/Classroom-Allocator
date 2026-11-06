@@ -1,15 +1,6 @@
 
 import React from "react";
-import {
-  Alert,
-  ScrollView,
-  Text,
-  StyleSheet,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-
+import {Alert,ScrollView,Text,StyleSheet,View,TextInput,TouchableOpacity,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import { logoutUser } from "../services/authService";
@@ -112,7 +103,7 @@ export default function HomeScreen({ navigation }) {
         )}
 
         {/* Logout */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.logoutButton}
           onPress={() =>
             Alert.alert("Log out", "Are you sure?", [
@@ -126,7 +117,7 @@ export default function HomeScreen({ navigation }) {
           }
         >
           <Text style={styles.logoutText}>Log out</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
       </ScrollView>
 
