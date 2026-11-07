@@ -14,6 +14,7 @@ import ClassroomDetailsScreen from "./src/screens/ClassroomDetailsScreen";
 import MapScreen from "./src/screens/MapScreen";
 import AdminScreen from "./src/screens/AdminScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
+import EditProfileScreen from "./src/screens/EditProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +23,13 @@ function RootNavigator() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <ActivityIndicator size="large" />
       </View>
     );
@@ -31,7 +38,6 @@ function RootNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-
         {!user ? (
           <>
             <Stack.Screen
@@ -83,9 +89,14 @@ function RootNavigator() {
               component={ProfileScreen}
               options={{ headerShown: false }}
             />
+
+            <Stack.Screen
+              name="EditProfile"
+              component={EditProfileScreen}
+              options={{ headerShown: false }}
+            />
           </>
         )}
-
       </Stack.Navigator>
     </NavigationContainer>
   );

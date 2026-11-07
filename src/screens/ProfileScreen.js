@@ -1,16 +1,13 @@
 
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
-  TextInput,
+  Image,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Image,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -18,317 +15,381 @@ import { useAuth } from "../context/AuthContext";
 import { logoutUser } from "../services/authService";
 
 export default function ProfileScreen({ navigation }) {
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
 
-  const [fullName, setFullName] = useState(profile?.name || "");
-  const [course, setCourse] = useState(profile?.course || "B.E in IT");
-  const [email, setEmail] = useState(profile?.email || "");
-  
-  const handleSave = () => {
-    if (!fullName.trim() || !course.trim() || !email.trim()) {
-      Alert.alert("Missing Information", "Please fill in all fields.");
-      return;
-    }
-
+  const handleLogout = () => {
     Alert.alert(
-      "Profile",
-      "Profile details are ready. Connect your profile update service to save these changes."
+      "Log Out",
+      "Are you sure you want to log out of ClassFind?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Log Out",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await logoutUser();
+            } catch (error) {
+              Alert.alert("Logout failed", error.message);
+            }
+          },
+        },
+      ]
     );
   };
 
+  const displayName = profile?.name || "User";
+  const email = profile?.email || user?.email || "Not available";
+
   return (
-    <View style={styles.screen}>
-
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-        <ScrollView
-          contentContainerStyle={styles.container}
-          keyboardShouldPersistTaps="handled"
-        >
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>My Profile</Text>
+          <Text style={styles.headerSubtitle}>
+            View your personal information
+          </Text>
+        </View>
 
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backButton}
-            >
-              <Ionicons name="arrow-back" size={24} color="#17324D" />
-            </TouchableOpacity>
-
-            <Text style={styles.headerTitle}>Edit Profile</Text>
-          </View>
-
-          {/* Profile Picture */}
-          <View style={styles.avatarContainer}>
+        {/* Profile Picture and Name */}
+        <View style={styles.profileSection}>
+          {profile?.profilePicUrl ? (
+            <Image
+              source={{ uri: profile.profilePicUrl }}
+              style={styles.avatar}
+              resizeMode="cover"
+            />
+          ) : (
             <View style={styles.avatar}>
               <Ionicons
                 name="person"
-                size={55}
+                size={58}
+                color="#9296C4"
+              />
+            </View>
+          )}
+
+          <Text style={styles.profileName}>{displayName}</Text>
+          <Text style={styles.profileEmail}>{email}</Text>
+        </View>
+
+        {/* Personal Information */}
+        <View style={styles.informationSection}>
+          <Text style={styles.sectionTitle}>
+            Personal Information
+          </Text>
+
+          {/* Full Name */}
+          <View style={styles.infoCard}>
+            <View style={styles.infoIcon}>
+              <Ionicons
+                name="person-outline"
+                size={21}
                 color="#9296C4"
               />
             </View>
 
-            <TouchableOpacity
-              style={styles.cameraButton}
-              onPress={() =>
-                Alert.alert(
-                  "Profile Picture",
-                  "Image upload functionality can be added next."
-                )
-              }
-            >
-              <Ionicons name="camera" size={19} color="#FFFFFF" />
-            </TouchableOpacity>
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Full Name</Text>
+              <Text style={styles.infoValue}>{displayName}</Text>
+            </View>
           </View>
 
-          {/* Full Name */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Full Name</Text>
-            <TextInput
-              style={styles.input}
-              value={fullName}
-              onChangeText={setFullName}
-              placeholder="Enter your full name"
-              placeholderTextColor="#98A2B3"
-            />
+          {/* Student ID */}
+          <View style={styles.infoCard}>
+            <View style={styles.infoIcon}>
+              <Ionicons
+                name="card-outline"
+                size={21}
+                color="#9296C4"
+              />
+            </View>
+
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Student ID</Text>
+              <Text style={styles.infoValue}>
+                {profile?.studentId || "Not available"}
+              </Text>
+            </View>
           </View>
 
           {/* Course */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Course / Major</Text>
-            <TextInput
-              style={styles.input}
-              value={course}
-              onChangeText={setCourse}
-              placeholder="Enter your course"
-              placeholderTextColor="#98A2B3"
-            />
+          <View style={styles.infoCard}>
+            <View style={styles.infoIcon}>
+              <Ionicons
+                name="school-outline"
+                size={21}
+                color="#9296C4"
+              />
+            </View>
+
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Course / Major</Text>
+              <Text style={styles.infoValue}>
+                {profile?.course || "Not provided"}
+              </Text>
+            </View>
           </View>
 
           {/* Email */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email Address</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Enter your email"
-              placeholderTextColor="#98A2B3"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
+          <View style={styles.infoCard}>
+            <View style={styles.infoIcon}>
+              <Ionicons
+                name="mail-outline"
+                size={21}
+                color="#9296C4"
+              />
+            </View>
+
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Email Address</Text>
+              <Text style={styles.infoValue}>{email}</Text>
+            </View>
           </View>
+        </View>
 
-          {/* Save Button */}
-          <TouchableOpacity
-            style={styles.saveButton}
-            onPress={handleSave}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.saveButtonText}>
-              Save Changes
-            </Text>
-          </TouchableOpacity>
+        {/* Edit Profile Button */}
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => navigation.navigate("EditProfile")}
+        >
+          <Ionicons
+            name="create-outline"
+            size={20}
+            color="#FFFFFF"
+          />
+          <Text style={styles.editButtonText}>Edit Profile</Text>
+        </TouchableOpacity>
 
-          {/* Logout */}
-          <TouchableOpacity
-            style={styles.logoutButton}
-            onPress={() =>
-              Alert.alert("Log out", "Are you sure?", [
-                { text: "Cancel", style: "cancel" },
-                {
-                  text: "Log out",
-                  style: "destructive",
-                  onPress: logoutUser,
-                },
-              ])
-            }
-          >
-            <Ionicons name="log-out-outline" size={19} color="#667085" />
-            <Text style={styles.logoutText}>Log Out</Text>
-          </TouchableOpacity>
-
-        </ScrollView>
-      </KeyboardAvoidingView>
+        {/* Logout Button */}
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+        >
+          <Ionicons
+            name="log-out-outline"
+            size={20}
+            color="#D64545"
+          />
+          <Text style={styles.logoutButtonText}>Log Out</Text>
+        </TouchableOpacity>
+      </ScrollView>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-
+      <View style={styles.bottomNavigation}>
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => navigation.navigate("Home")}
         >
-          <Ionicons name="home" size={21} color="#667085" />
-          <Text style={styles.navLabel}>Home</Text>
+          <Ionicons
+            name="home-outline"
+            size={23}
+            color="#9296A4"
+          />
+          <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => navigation.navigate("Map")}
         >
-          <Ionicons name="location" size={22} color="#667085" />
-          <Text style={styles.navLabel}>Map</Text>
+          <Ionicons
+            name="map-outline"
+            size={23}
+            color="#9296A4"
+          />
+          <Text style={styles.navText}>Map</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navItem}>
-          <View style={styles.activeIcon}>
-            <Ionicons name="person" size={20} color="#FFFFFF" />
-          </View>
-          <Text style={styles.activeLabel}>Profile</Text>
+          <Ionicons
+            name="person"
+            size={23}
+            color="#17324D"
+          />
+          <Text style={[styles.navText, styles.activeNavText]}>
+            Profile
+          </Text>
         </TouchableOpacity>
-
       </View>
-
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
-  screen: {
+  container: {
     flex: 1,
     backgroundColor: "#F6F8FA",
   },
 
-  container: {
-    flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingTop: 25,
+  scrollContent: {
     paddingBottom: 25,
   },
 
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 35,
-  },
-
-  backButton: {
-    marginRight: 15,
+    paddingHorizontal: 22,
+    paddingTop: 22,
+    paddingBottom: 10,
   },
 
   headerTitle: {
-    fontSize: 20,
-    fontWeight: "700",
+    fontSize: 25,
+    fontWeight: "800",
     color: "#17324D",
   },
 
-  avatarContainer: {
+  headerSubtitle: {
+    fontSize: 14,
+    color: "#667085",
+    marginTop: 5,
+  },
+
+  profileSection: {
     alignItems: "center",
-    marginBottom: 40,
+    paddingVertical: 25,
   },
 
   avatar: {
-    width: 125,
-    height: 125,
-    borderRadius: 65,
-    backgroundColor: "#EAE7F2",
+    width: 115,
+    height: 115,
+    borderRadius: 58,
+    backgroundColor: "#E8E9F5",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 13,
   },
 
-  cameraButton: {
-    position: "absolute",
-    bottom: 0,
-    right: "29%",
-    width: 38,
-    height: 38,
-    borderRadius: 20,
-    backgroundColor: "#9296C4",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 3,
-    borderColor: "#F6F8FA",
-  },
-
-  inputContainer: {
-    marginBottom: 20,
-  },
-
-  label: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#667085",
-    marginBottom: 8,
-  },
-
-  input: {
-    height: 52,
-    borderWidth: 1,
-    borderColor: "#D0D5DD",
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    fontSize: 15,
-    color: "#17324D",
-    backgroundColor: "#FFFFFF",
-  },
-
-  saveButton: {
-    height: 52,
-    backgroundColor: "#9296C4",
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
-  },
-
-  saveButtonText: {
-    color: "#FFFFFF",
-    fontSize: 15,
+  profileName: {
+    fontSize: 22,
     fontWeight: "700",
+    color: "#17324D",
+  },
+
+  profileEmail: {
+    fontSize: 14,
+    color: "#667085",
+    marginTop: 5,
+  },
+
+  informationSection: {
+    paddingHorizontal: 20,
+  },
+
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#17324D",
+    marginBottom: 14,
+  },
+
+  infoCard: {
+    minHeight: 72,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    marginBottom: 11,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#EAECF0",
+  },
+
+  infoIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    backgroundColor: "#F0F0F8",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 13,
+  },
+
+  infoContent: {
+    flex: 1,
+  },
+
+  infoLabel: {
+    fontSize: 12,
+    color: "#9296A4",
+    marginBottom: 4,
+  },
+
+  infoValue: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#344054",
+  },
+
+  editButton: {
+    height: 52,
+    backgroundColor: "#17324D",
+    borderRadius: 12,
+    marginHorizontal: 22,
+    marginTop: 17,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  editButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+    marginLeft: 9,
   },
 
   logoutButton: {
+    height: 52,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#F1D5D5",
+    marginHorizontal: 22,
+    marginTop: 12,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 25,
-    gap: 8,
-    padding: 10,
   },
 
-  logoutText: {
-    color: "#667085",
-    fontSize: 14,
-    fontWeight: "600",
+  logoutButtonText: {
+    color: "#D64545",
+    fontSize: 16,
+    fontWeight: "700",
+    marginLeft: 9,
   },
 
-  bottomNav: {
-    height: 75,
+  bottomNavigation: {
+    height: 68,
     backgroundColor: "#FFFFFF",
+    borderTopWidth: 1,
+    borderTopColor: "#EAECF0",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    borderTopWidth: 1,
-    borderTopColor: "#E4E7EC",
-    paddingBottom: 5,
   },
 
   navItem: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    flex: 1,
   },
 
-  activeIcon: {
-    backgroundColor: "#9296C4",
-    paddingHorizontal: 17,
-    paddingVertical: 5,
-    borderRadius: 20,
-  },
-
-  navLabel: {
+  navText: {
     fontSize: 11,
-    color: "#667085",
+    color: "#9296A4",
+    marginTop: 4,
   },
 
-  activeLabel: {
-    fontSize: 11,
+  activeNavText: {
+    color: "#17324D",
     fontWeight: "700",
-    color: "#9296C4",
   },
-
 });

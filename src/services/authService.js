@@ -2,17 +2,26 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } f
 import { doc, setDoc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 
-export async function registerUser({ name, studentId, email, password }) {
-  const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
+
+export async function registerUser({ name, studentId, course, email, password }) {
+  const credential = await createUserWithEmailAndPassword(
+    auth,
+    email.trim(),
+    password
+  );
+
   await setDoc(doc(db, "users", credential.user.uid), {
     name: name.trim(),
     studentId: studentId.trim(),
+    course: course.trim(),
     email: email.trim().toLowerCase(),
     role: "student",
     createdAt: new Date().toISOString(),
   });
+
   return credential.user;
 }
+
 
 export async function loginUser(identifier, password) {
   const value = identifier.trim().toLowerCase();
