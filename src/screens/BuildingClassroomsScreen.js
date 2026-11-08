@@ -14,7 +14,10 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { getClassrooms } from "../services/classroomService";
 
+import { useTheme } from "../context/ThemeContext";
 export default function BuildingClassroomsScreen({ route, navigation }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { building } = route.params;
 
   const [classrooms, setClassrooms] = useState([]);
@@ -101,7 +104,7 @@ export default function BuildingClassroomsScreen({ route, navigation }) {
             <Ionicons
               name="business"
               size={35}
-              color="#9296C4"
+              color={colors.icon}
             />
           </View>
 
@@ -121,7 +124,7 @@ export default function BuildingClassroomsScreen({ route, navigation }) {
         {loading ? (
           <ActivityIndicator
             size="large"
-            color="#9296C4"
+            color={colors.icon}
             style={styles.loader}
           />
         ) : classrooms.length === 0 ? (
@@ -129,7 +132,7 @@ export default function BuildingClassroomsScreen({ route, navigation }) {
             <Ionicons
               name="alert-circle-outline"
               size={42}
-              color="#9296C4"
+              color={colors.icon}
             />
 
             <Text style={styles.emptyTitle}>
@@ -148,7 +151,7 @@ export default function BuildingClassroomsScreen({ route, navigation }) {
                 <Ionicons
                   name="layers-outline"
                   size={21}
-                  color="#17324D"
+                  color={colors.text}
                 />
 
                 <Text style={styles.floorTitle}>
@@ -186,7 +189,7 @@ export default function BuildingClassroomsScreen({ route, navigation }) {
                         <Ionicons
                           name="school-outline"
                           size={24}
-                          color="#9296C4"
+                          color={colors.icon}
                         />
                       </View>
 
@@ -206,7 +209,7 @@ export default function BuildingClassroomsScreen({ route, navigation }) {
                         <Ionicons
                           name="chevron-forward"
                           size={14}
-                          color="#9296C4"
+                          color={colors.icon}
                         />
                       </View>
                     </TouchableOpacity>
@@ -220,10 +223,10 @@ export default function BuildingClassroomsScreen({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F6F8FA",
+    backgroundColor: colors.background,
   },
 
   content: {
@@ -233,7 +236,7 @@ const styles = StyleSheet.create({
 
   header: {
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     padding: 22,
     borderRadius: 16,
     marginBottom: 22,
@@ -244,7 +247,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 20,
-    backgroundColor: "#F0F0FA",
+    backgroundColor: colors.surfaceMuted,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 12,
@@ -253,18 +256,18 @@ const styles = StyleSheet.create({
   buildingName: {
     fontSize: 23,
     fontWeight: "800",
-    color: "#17324D",
+    color: colors.text,
     textAlign: "center",
   },
 
   subtitle: {
-    color: "#667085",
+    color: colors.secondaryText,
     fontSize: 14,
     marginTop: 7,
   },
 
   total: {
-    color: "#9296C4",
+    color: colors.icon,
     fontSize: 13,
     fontWeight: "700",
     marginTop: 12,
@@ -275,7 +278,7 @@ const styles = StyleSheet.create({
   },
 
   emptyContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 15,
     padding: 30,
     alignItems: "center",
@@ -283,14 +286,14 @@ const styles = StyleSheet.create({
   },
 
   emptyTitle: {
-    color: "#17324D",
+    color: colors.text,
     fontWeight: "700",
     fontSize: 17,
     marginTop: 12,
   },
 
   emptyText: {
-    color: "#667085",
+    color: colors.secondaryText,
     textAlign: "center",
     marginTop: 7,
     lineHeight: 21,
@@ -307,7 +310,7 @@ const styles = StyleSheet.create({
   },
 
   floorTitle: {
-    color: "#17324D",
+    color: colors.text,
     fontSize: 18,
     fontWeight: "800",
     marginLeft: 9,
@@ -315,14 +318,14 @@ const styles = StyleSheet.create({
   },
 
   floorCount: {
-    backgroundColor: "#E9E9F5",
+    backgroundColor: colors.accentSurface,
     borderRadius: 15,
     paddingHorizontal: 11,
     paddingVertical: 5,
   },
 
   floorCountText: {
-    color: "#9296C4",
+    color: colors.icon,
     fontSize: 12,
     fontWeight: "700",
   },
@@ -336,7 +339,7 @@ const styles = StyleSheet.create({
 
   classroomCard: {
     width: "48%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 14,
     elevation: 2,
@@ -347,7 +350,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 12,
-    backgroundColor: "#F0F0FA",
+    backgroundColor: colors.surfaceMuted,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 12,
@@ -356,12 +359,12 @@ const styles = StyleSheet.create({
   roomName: {
     fontSize: 19,
     fontWeight: "800",
-    color: "#17324D",
+    color: colors.text,
   },
 
   roomLabel: {
     fontSize: 12,
-    color: "#667085",
+    color: colors.secondaryText,
     marginTop: 4,
   },
 
@@ -372,7 +375,7 @@ const styles = StyleSheet.create({
   },
 
   viewDetailsText: {
-    color: "#9296C4",
+    color: colors.icon,
     fontSize: 12,
     fontWeight: "700",
   },

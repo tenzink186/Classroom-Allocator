@@ -8,7 +8,10 @@ import {
   View,
   StyleSheet,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
+
+import { Ionicons } from "@expo/vector-icons";
 
 import MapView, { Marker } from "react-native-maps";
 
@@ -21,7 +24,13 @@ import {
 
 import { getCurrentLocation } from "../services/locationService";
 
-export default function MapScreen({ route }) {
+import { useTheme } from "../context/ThemeContext";
+
+export default function MapScreen({ route, navigation }) {
+
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   const destination = route.params?.destination;
 
   const [current, setCurrent] = useState(null);
@@ -30,7 +39,7 @@ export default function MapScreen({ route }) {
 
   const mapRef = useRef(null);
 
-  // Get the student's actual location and readable address
+  // Get student's current location
   async function locate() {
     try {
       setLocating(true);
@@ -40,20 +49,22 @@ export default function MapScreen({ route }) {
       setCurrent(position);
 
       return position;
+
     } catch (error) {
       Alert.alert("Location unavailable", error.message);
       return null;
+
     } finally {
       setLocating(false);
     }
   }
 
-  // Get location automatically when map opens
+  // Automatically get location when map opens
   useEffect(() => {
     locate();
   }, []);
 
-  // Zoom to the selected destination
+  // Zoom to selected destination
   useEffect(() => {
     if (
       mapReady &&
@@ -74,6 +85,7 @@ export default function MapScreen({ route }) {
 
   // Open Google Maps walking directions
   async function directions() {
+
     if (
       !destination ||
       !Number.isFinite(Number(destination.latitude)) ||
@@ -88,13 +100,10 @@ export default function MapScreen({ route }) {
 
     let origin = current;
 
-    // Get current location if not already available
     if (!origin) {
       origin = await locate();
 
-      if (!origin) {
-        return;
-      }
+      if (!origin) return;
     }
 
     const latitude = Number(destination.latitude);
@@ -108,6 +117,7 @@ export default function MapScreen({ route }) {
 
     try {
       await Linking.openURL(url);
+
     } catch (error) {
       Alert.alert(
         "Could not open directions",
@@ -143,7 +153,7 @@ export default function MapScreen({ route }) {
           />
         ))}
 
-        {/* Student's Actual Location */}
+        {/* Student's Current Location */}
         {current && (
           <Marker
             coordinate={{
@@ -156,7 +166,7 @@ export default function MapScreen({ route }) {
           />
         )}
 
-        {/* Selected Classroom Destination */}
+        {/* Selected Classroom */}
         {destination &&
           Number.isFinite(Number(destination.latitude)) &&
           Number.isFinite(Number(destination.longitude)) && (
@@ -182,16 +192,20 @@ export default function MapScreen({ route }) {
             : "CST Campus Map"}
         </Text>
 
-        {/* Readable Current Location */}
+        {/* Current Location */}
         <View style={styles.locationBox}>
+
           <Text style={styles.locationTitle}>
-            <Text>📍 </Text>
-            Your Current Location
+            📍 Your Current Location
           </Text>
 
           {locating ? (
             <View style={styles.loadingRow}>
-              <ActivityIndicator size="small" color="#17324D" />
+              <ActivityIndicator
+                size="small"
+                color={colors.primary}
+              />
+
               <Text style={styles.locationText}>
                 Finding your location...
               </Text>
@@ -203,6 +217,7 @@ export default function MapScreen({ route }) {
                 : "Location not detected. Please refresh."}
             </Text>
           )}
+
         </View>
 
         {/* Refresh Location */}
@@ -224,67 +239,160 @@ export default function MapScreen({ route }) {
           />
         )}
 
-        <Text style={styles.hint}>
+        {/* <Text style={styles.hint}>
           Walking directions open in Google Maps.
           Indoor classroom floors are shown in classroom details.
-        </Text>
+        </Text> */}
 
       </View>
+
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNavigation}>
+
+        {/* Home */}
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => navigation.navigate("Home")}
+        >
+          <Ionicons
+            name="home-outline"
+            size={23}
+            color={colors.secondaryText}
+          />
+
+          <Text style={styles.navText}>
+            Home
+          </Text>
+        </TouchableOpacity>
+
+        {/* Map */}
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => navigation.navigate("Map")}
+        >
+          <Ionicons
+            name="location"
+            size={23}
+            color={colors.primary}
+          />
+
+          <Text style={[styles.navText, styles.activeNavText]}>
+            Map
+          </Text>
+        </TouchableOpacity>
+
+        {/* Profile */}
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => navigation.navigate("Profile")}
+        >
+          <Ionicons
+            name="person-outline"
+            size={23}
+            color={colors.secondaryText}
+          />
+
+          <Text style={styles.navText}>
+            Profile
+          </Text>
+        </TouchableOpacity>
+
+      </View>
+
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
 
-  map: {
-    flex: 1,
-  },
+// Styles
+const createStyles = (colors) =>
+  StyleSheet.create({
 
-  panel: {
-    padding: 14,
-    backgroundColor: "#FFFFFF",
-  },
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
 
-  destination: {
-    fontWeight: "700",
-    fontSize: 16,
-    color: "#17324D",
-    marginBottom: 10,
-  },
+    map: {
+      flex: 1,
+    },
 
-  locationBox: {
-    backgroundColor: "#EAF2FF",
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
+    panel: {
+      padding: 10,
+      backgroundColor: colors.card,
+    },
 
-  locationTitle: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#17324D",
-    marginBottom: 6,
-  },
+    destination: {
+      fontWeight: "700",
+      fontSize: 16,
+      color: colors.text,
+      marginBottom: 10,
+    },
 
-  locationText: {
-    fontSize: 14,
-    color: "#344054",
-    lineHeight: 21,
-  },
+    locationBox: {
+      backgroundColor: colors.surface,
+      padding: 10,
+      borderRadius: 10,
+      marginBottom: 10,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
 
-  loadingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
+    locationTitle: {
+      fontSize: 15,
+      fontWeight: "700",
+      color: colors.text,
+      marginBottom: 6,
+    },
 
-  hint: {
-    color: "#667085",
-    fontSize: 12,
-    marginTop: 8,
-    lineHeight: 18,
-  },
-});
+    locationText: {
+      fontSize: 14,
+      color: colors.secondaryText,
+      lineHeight: 21,
+    },
+
+    loadingRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+
+    hint: {
+      color: colors.secondaryText,
+      fontSize: 12,
+      marginTop: 8,
+      lineHeight: 18,
+    },
+
+    // Bottom Navigation
+    bottomNavigation: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      alignItems: "center",
+      backgroundColor: colors.card,
+      paddingVertical: 10,
+      paddingBottom: 12,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+
+    navItem: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 4,
+      paddingVertical: 4,
+    },
+
+    navText: {
+      fontSize: 12,
+      color: colors.secondaryText,
+      fontWeight: "500",
+    },
+
+    activeNavText: {
+      color: colors.primary,
+      fontWeight: "700",
+    },
+
+  });

@@ -18,7 +18,10 @@ import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "../context/AuthContext";
 import { uploadProfilePicture } from "../services/cloudinaryService";
 
+import { useTheme } from "../context/ThemeContext";
 export default function EditProfileScreen({ navigation }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { user, profile, updateUserProfile } = useAuth();
 
   const [fullName, setFullName] = useState("");
@@ -165,15 +168,15 @@ export default function EditProfileScreen({ navigation }) {
         style={styles.backButton}
         onPress={() => navigation.goBack()}
       >
-        <Ionicons name="arrow-back" size={23} color="#17324D" />
+        <Ionicons name="arrow-back" size={23} color={colors.text} />
         <Text style={styles.backText}>Back to Profile</Text>
       </TouchableOpacity>
 
-      <Text style={styles.heading}>Edit Profile</Text>
+      <Text style={styles.heading}></Text>
 
-      <Text style={styles.subtitle}>
+      {/* <Text style={styles.subtitle}>
         Update your personal information
-      </Text>
+      </Text> */}
 
       {/* Profile Picture */}
       <View style={styles.pictureSection}>
@@ -190,7 +193,7 @@ export default function EditProfileScreen({ navigation }) {
             />
           ) : (
             <View style={styles.avatarPlaceholder}>
-              <Ionicons name="person" size={58} color="#9296C4" />
+              <Ionicons name="person" size={58} color={colors.icon} />
             </View>
           )}
 
@@ -223,7 +226,7 @@ export default function EditProfileScreen({ navigation }) {
           editable={!saving}
         />
 
-        <Text style={styles.label}>Programme / Course</Text>
+        <Text style={styles.label}>Programme </Text>
 
         <TextInput
           style={styles.input}
@@ -288,10 +291,10 @@ export default function EditProfileScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F6F8FA",
+    backgroundColor: colors.background,
   },
   content: {
     padding: 22,
@@ -304,18 +307,18 @@ const styles = StyleSheet.create({
   },
   backText: {
     marginLeft: 8,
-    color: "#17324D",
+    color: colors.text,
     fontSize: 14,
     fontWeight: "600",
   },
   heading: {
     fontSize: 26,
     fontWeight: "800",
-    color: "#17324D",
+    color: colors.text,
   },
   subtitle: {
     fontSize: 14,
-    color: "#667085",
+    color: colors.secondaryText,
     marginTop: 5,
   },
   pictureSection: {
@@ -332,13 +335,13 @@ const styles = StyleSheet.create({
     width: 125,
     height: 125,
     borderRadius: 63,
-    backgroundColor: "#E8E9F5",
+    backgroundColor: colors.accentSurface,
   },
   avatarPlaceholder: {
     width: 125,
     height: 125,
     borderRadius: 63,
-    backgroundColor: "#E8E9F5",
+    backgroundColor: colors.accentSurface,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -346,17 +349,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     bottom: 2,
-    backgroundColor: "#17324D",
+    backgroundColor: colors.primaryDark,
     width: 38,
     height: 38,
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 3,
-    borderColor: "#F6F8FA",
+    borderColor: colors.background,
   },
   changePicture: {
-    color: "#9296C4",
+    color: colors.icon,
     fontSize: 14,
     fontWeight: "700",
   },
@@ -364,7 +367,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   label: {
-    color: "#344054",
+    color: colors.mutedText,
     fontWeight: "600",
     fontSize: 14,
     marginBottom: 7,
@@ -372,22 +375,23 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: "#D0D5DD",
+    borderColor: colors.border,
     borderRadius: 10,
     paddingHorizontal: 14,
     fontSize: 15,
-    color: "#344054",
+    color: colors.mutedText,
   },
   readOnly: {
-    backgroundColor: "#EAECF0",
-    color: "#667085",
+    backgroundColor: colors.secondarySurface,
+    color: colors.secondaryText,
   },
   saveButton: {
     height: 52,
-    backgroundColor: "#17324D",
+    backgroundColor: colors.primaryDark,
     borderRadius: 12,
+    marginHorizontal: 80,
     marginTop: 25,
     flexDirection: "row",
     justifyContent: "center",
@@ -408,7 +412,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   cancelText: {
-    color: "#667085",
+    color: colors.secondaryText,
     fontWeight: "600",
   },
 });

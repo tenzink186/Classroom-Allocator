@@ -5,6 +5,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { AuthProvider, useAuth } from "./src/context/AuthContext";
+import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
+import { StatusBar } from "expo-status-bar";
 
 import LoginScreen from "./src/screens/LoginScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
@@ -22,6 +24,7 @@ const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
   const { user, loading } = useAuth();
+  const { navigationTheme, isDark, colors } = useTheme();
 
   if (loading) {
     return (
@@ -38,7 +41,9 @@ function RootNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <>
+    <StatusBar style={isDark ? "light" : "dark"} backgroundColor={colors.background} />
+    <NavigationContainer theme={navigationTheme}>
       <Stack.Navigator>
 
         {!user ? (
@@ -46,13 +51,13 @@ function RootNavigator() {
             <Stack.Screen
               name="Login"
               component={LoginScreen}
-              options={{ title: "ClassFind" }}
+              options={{ title: "" }}
             />
 
             <Stack.Screen
               name="Register"
               component={RegisterScreen}
-              options={{ title: "Create account" }}
+              options={{ title: "" }}
             />
           </>
         ) : (
@@ -61,49 +66,49 @@ function RootNavigator() {
             <Stack.Screen
               name="Home"
               component={HomeScreen}
-              options={{ title: "ClassFind" }}
+              options={{ title: "" }}
             />
 
             {/* Search Screen */}
             <Stack.Screen
               name="Search"
               component={SearchScreen}
-              options={{ title: "Find a classroom" }}
+              options={{ title: "" }}
             />
 
             {/* Buildings Screen */}
             <Stack.Screen
               name="Buildings"
               component={BuildingsScreen}
-              options={{ title: "Campus Buildings" }}
+              options={{ title: "" }}
             />
 
             {/* Building Classrooms Screen */}
             <Stack.Screen
               name="BuildingClassrooms"
               component={BuildingClassroomsScreen}
-              options={{ title: "Classrooms" }}
+              options={{ title: "" }}
             />
 
             {/* Classroom Details Screen */}
             <Stack.Screen
               name="Details"
               component={ClassroomDetailsScreen}
-              options={{ title: "Classroom details" }}
+              options={{ title: "" }}
             />
 
             {/* Campus Map */}
             <Stack.Screen
               name="Map"
               component={MapScreen}
-              options={{ title: "Campus directions" }}
+              options={{ title: "" }}
             />
 
             {/* Admin Screen */}
             <Stack.Screen
               name="Admin"
               component={AdminScreen}
-              options={{ title: "Classroom management" }}
+              options={{ title: "" }}
             />
 
             {/* Profile Screen */}
@@ -124,13 +129,16 @@ function RootNavigator() {
 
       </Stack.Navigator>
     </NavigationContainer>
+    </>
   );
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <RootNavigator />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

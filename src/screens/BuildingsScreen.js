@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+import { useTheme } from "../context/ThemeContext";
 const BUILDINGS = [
   {
     id: "academic",
@@ -49,6 +50,8 @@ const BUILDINGS = [
 ];
 
 export default function BuildingsScreen({ navigation }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   return (
     <ScrollView
       style={styles.screen}
@@ -75,7 +78,7 @@ export default function BuildingsScreen({ navigation }) {
             <Ionicons
               name={building.icon}
               size={30}
-              color="#9296C4"
+              color={colors.icon}
             />
           </View>
 
@@ -92,7 +95,7 @@ export default function BuildingsScreen({ navigation }) {
           <Ionicons
             name="chevron-forward"
             size={22}
-            color="#9296C4"
+            color={colors.icon}
           />
         </TouchableOpacity>
       ))}
@@ -100,10 +103,10 @@ export default function BuildingsScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#F6F8FA",
+    backgroundColor: colors.background,
   },
 
   container: {
@@ -114,20 +117,20 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 25,
     fontWeight: "800",
-    color: "#17324D",
+    color: colors.text,
     marginBottom: 8,
   },
 
   subtitle: {
     fontSize: 14,
-    color: "#667085",
+    color: colors.secondaryText,
     marginBottom: 22,
   },
 
   buildingCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     padding: 16,
     borderRadius: 15,
     marginBottom: 14,
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     borderRadius: 12,
-    backgroundColor: "#F0F0F8",
+    backgroundColor: colors.surfaceMuted,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 14,
@@ -151,13 +154,13 @@ const styles = StyleSheet.create({
   buildingName: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#17324D",
+    color: colors.text,
     marginBottom: 6,
   },
 
   description: {
     fontSize: 12,
-    color: "#667085",
+    color: colors.secondaryText,
     lineHeight: 18,
   },
 });

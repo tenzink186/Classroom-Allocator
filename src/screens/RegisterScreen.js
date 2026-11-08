@@ -1,18 +1,13 @@
 
 import React, { useState } from "react";
-
-import {
-  Alert,
-  ScrollView,
-  Text,
-  TextInput,
-  StyleSheet,
-} from "react-native";
-
+import {Alert,ScrollView,Text,TextInput,StyleSheet,} from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 import { registerUser } from "../services/authService";
+import { useTheme } from "../context/ThemeContext";
 
 export default function RegisterScreen({ navigation }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [form, setForm] = useState({
     name: "",
     studentId: "",
@@ -38,6 +33,13 @@ export default function RegisterScreen({ navigation }) {
       );
     }
 
+    if (!/^022\d{5}$/.test(form.studentId)) {
+      return Alert.alert(
+        "Invalid Student ID",
+        "Student ID must be exactly 8 digits and start with 022 (e.g. 02240156)."
+      );
+    }
+
     if (form.password.length < 6) {
       return Alert.alert(
         "Password too short",
@@ -51,23 +53,6 @@ export default function RegisterScreen({ navigation }) {
       await registerUser(form);
 
       navigation.reset({index: 0, routes: [{ name: "Login" }]});
-
-      // Alert.alert(
-      //   "Registration successful!",
-      //   // "Your ClassFind account has been created. Please log in using your email or student ID and password.",
-      //   // [
-      //   //   {
-      //   //     text: "Go to Login",
-      //   //     onPress: () => {
-      //   //       navigation.reset({
-      //   //         index: 0,
-      //   //         routes: [{ name: "Login" }],
-      //   //       });
-      //   //     },
-      //   //   },
-      //   // ],
-      //   // { cancelable: false }
-      // );
 
     } catch (e) {
       Alert.alert(
@@ -91,6 +76,7 @@ export default function RegisterScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Full name"
+        placeholderTextColor={colors.placeholder}
         autoCapitalize="words"
         value={form.name}
         onChangeText={(v) => set("name", v)}
@@ -99,6 +85,7 @@ export default function RegisterScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Student ID"
+        placeholderTextColor={colors.placeholder}
         autoCapitalize="characters"
         value={form.studentId}
         onChangeText={(v) => set("studentId", v)}
@@ -107,6 +94,7 @@ export default function RegisterScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Programme"
+        placeholderTextColor={colors.placeholder}
         autoCapitalize="words"
         value={form.course}
         onChangeText={(v) => set("course", v)}
@@ -115,6 +103,7 @@ export default function RegisterScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Email address"
+        placeholderTextColor={colors.placeholder}
         autoCapitalize="none"
         keyboardType="email-address"
         value={form.email}
@@ -124,6 +113,7 @@ export default function RegisterScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor={colors.placeholder}
         secureTextEntry
         autoCapitalize="none"
         value={form.password}
@@ -139,25 +129,25 @@ export default function RegisterScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   container: {
     flexGrow: 1,
     justifyContent: "center",
     padding: 24,
-    backgroundColor: "#F6F8FA",
+    backgroundColor: colors.background,
   },
 
   heading: {
     fontSize: 25,
     fontWeight: "800",
-    color: "#17324D",
+    color: colors.text,
     marginBottom: 20,
   },
 
   input: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: "#D0D5DD",
+    borderColor: colors.border,
     borderRadius: 10,
     padding: 14,
     marginVertical: 7,

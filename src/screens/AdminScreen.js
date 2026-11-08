@@ -5,9 +5,12 @@ import ClassroomCard from "../components/ClassroomCard";
 import { addClassroom, deleteClassroom, getClassrooms, updateClassroom } from "../services/classroomService";
 import { useAuth } from "../context/AuthContext";
 
+import { useTheme } from "../context/ThemeContext";
 const empty = { classroomNumber: "", building: "", floor: "", description: "", latitude: "", longitude: "" };
 
 export default function AdminScreen() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { profile } = useAuth();
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(empty);
@@ -91,13 +94,13 @@ export default function AdminScreen() {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#F6F8FA" },
+const createStyles = (colors) => StyleSheet.create({
+  container: { flex: 1, padding: 16, backgroundColor: colors.background },
   actions: { flexDirection: "row", justifyContent: "flex-end", gap: 20, marginBottom: 10, marginRight: 8 },
-  action: { color: "#1677D2", fontWeight: "700" },
-  delete: { color: "#C0392B", fontWeight: "700" },
-  modal: { flex: 1, padding: 20, justifyContent: "center", backgroundColor: "#F6F8FA" },
-  heading: { fontSize: 24, fontWeight: "800", color: "#17324D", marginBottom: 14 },
-  input: { backgroundColor: "#fff", borderWidth: 1, borderColor: "#D0D5DD", borderRadius: 9, padding: 12, marginVertical: 5 },
-  hint: { color: "#667085", fontSize: 12, marginVertical: 8 },
+  action: { color: colors.primary, fontWeight: "700" },
+  delete: { color: colors.danger, fontWeight: "700" },
+  modal: { flex: 1, padding: 20, justifyContent: "center", backgroundColor: colors.background },
+  heading: { fontSize: 24, fontWeight: "800", color: colors.text, marginBottom: 14 },
+  input: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: 9, padding: 12, marginVertical: 5 },
+  hint: { color: colors.secondaryText, fontSize: 12, marginVertical: 8 },
 });

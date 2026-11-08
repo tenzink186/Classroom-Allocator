@@ -2,7 +2,10 @@ import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 
+import { useTheme } from "../context/ThemeContext";
 export default function ClassroomDetailsScreen({ route, navigation }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { classroom } = route.params;
   return (
     <View style={styles.container}>
@@ -15,9 +18,9 @@ export default function ClassroomDetailsScreen({ route, navigation }) {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, backgroundColor: "#F6F8FA" },
-  title: { fontSize: 30, fontWeight: "800", color: "#17324D", marginBottom: 20 },
-  line: { fontSize: 16, marginVertical: 7, color: "#344054" },
-  note: { marginVertical: 20, color: "#667085", lineHeight: 21 },
+const createStyles = (colors) => StyleSheet.create({
+  container: { flex: 1, padding: 24, backgroundColor: colors.background },
+  title: { fontSize: 30, fontWeight: "800", color: colors.text, marginBottom: 20 },
+  line: { fontSize: 16, marginVertical: 7, color: colors.mutedText },
+  note: { marginVertical: 20, color: colors.secondaryText, lineHeight: 21 },
 });

@@ -14,7 +14,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import { logoutUser } from "../services/authService";
 
+import { useTheme } from "../context/ThemeContext";
 export default function ProfileScreen({ navigation }) {
+  const { colors, isDark } = useTheme();
+  const styles = createStyles(colors);
   const { user, profile } = useAuth();
 
   const handleLogout = () => {
@@ -52,10 +55,10 @@ export default function ProfileScreen({ navigation }) {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>My Profile</Text>
+          {/* <Text style={styles.headerTitle}></Text>
           <Text style={styles.headerSubtitle}>
             View your personal information
-          </Text>
+          </Text> */}
         </View>
 
         {/* Profile Picture and Name */}
@@ -71,7 +74,7 @@ export default function ProfileScreen({ navigation }) {
               <Ionicons
                 name="person"
                 size={58}
-                color="#9296C4"
+                color={colors.icon}
               />
             </View>
           )}
@@ -92,7 +95,7 @@ export default function ProfileScreen({ navigation }) {
               <Ionicons
                 name="person-outline"
                 size={21}
-                color="#9296C4"
+                color={colors.icon}
               />
             </View>
 
@@ -108,7 +111,7 @@ export default function ProfileScreen({ navigation }) {
               <Ionicons
                 name="card-outline"
                 size={21}
-                color="#9296C4"
+                color={colors.icon}
               />
             </View>
 
@@ -126,12 +129,12 @@ export default function ProfileScreen({ navigation }) {
               <Ionicons
                 name="school-outline"
                 size={21}
-                color="#9296C4"
+                color={colors.icon}
               />
             </View>
 
             <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Course / Major</Text>
+              <Text style={styles.infoLabel}>Programme</Text>
               <Text style={styles.infoValue}>
                 {profile?.course || "Not provided"}
               </Text>
@@ -144,7 +147,7 @@ export default function ProfileScreen({ navigation }) {
               <Ionicons
                 name="mail-outline"
                 size={21}
-                color="#9296C4"
+                color={colors.icon}
               />
             </View>
 
@@ -176,7 +179,7 @@ export default function ProfileScreen({ navigation }) {
           <Ionicons
             name="log-out-outline"
             size={20}
-            color="#D64545"
+            color={colors.danger}
           />
           <Text style={styles.logoutButtonText}>Log Out</Text>
         </TouchableOpacity>
@@ -190,8 +193,8 @@ export default function ProfileScreen({ navigation }) {
         >
           <Ionicons
             name="home-outline"
-            size={23}
-            color="#9296A4"
+            size={22}
+            color={colors.secondaryText}
           />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
@@ -201,9 +204,9 @@ export default function ProfileScreen({ navigation }) {
           onPress={() => navigation.navigate("Map")}
         >
           <Ionicons
-            name="map-outline"
-            size={23}
-            color="#9296A4"
+            name="location"
+            size={22}
+            color={colors.secondaryText}
           />
           <Text style={styles.navText}>Map</Text>
         </TouchableOpacity>
@@ -211,8 +214,8 @@ export default function ProfileScreen({ navigation }) {
         <TouchableOpacity style={styles.navItem}>
           <Ionicons
             name="person"
-            size={23}
-            color="#17324D"
+            size={22}
+            color={colors.primary}
           />
           <Text style={[styles.navText, styles.activeNavText]}>
             Profile
@@ -223,10 +226,10 @@ export default function ProfileScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F6F8FA",
+    backgroundColor: colors.background,
   },
 
   scrollContent: {
@@ -242,13 +245,40 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 25,
     fontWeight: "800",
-    color: "#17324D",
+    color: colors.text,
   },
 
   headerSubtitle: {
     fontSize: 14,
-    color: "#667085",
+    color: colors.secondaryText,
     marginTop: 5,
+  },
+
+  themeRow: {
+    marginHorizontal: 22,
+    marginTop: 10,
+    marginBottom: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  themeTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+
+  themeLabel: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: "600",
   },
 
   profileSection: {
@@ -260,7 +290,7 @@ const styles = StyleSheet.create({
     width: 115,
     height: 115,
     borderRadius: 58,
-    backgroundColor: "#E8E9F5",
+    backgroundColor: colors.accentSurface,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 13,
@@ -269,12 +299,12 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#17324D",
+    color: colors.text,
   },
 
   profileEmail: {
     fontSize: 14,
-    color: "#667085",
+    color: colors.secondaryText,
     marginTop: 5,
   },
 
@@ -285,13 +315,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#17324D",
+    color: colors.text,
     marginBottom: 14,
   },
 
   infoCard: {
     minHeight: 72,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 12,
     marginBottom: 11,
     paddingHorizontal: 14,
@@ -299,14 +329,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#EAECF0",
+    borderColor: colors.border,
   },
 
   infoIcon: {
     width: 42,
     height: 42,
     borderRadius: 12,
-    backgroundColor: "#F0F0F8",
+    backgroundColor: colors.surfaceMuted,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 13,
@@ -318,26 +348,26 @@ const styles = StyleSheet.create({
 
   infoLabel: {
     fontSize: 12,
-    color: "#9296A4",
+    color: colors.secondaryText,
     marginBottom: 4,
   },
 
   infoValue: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#344054",
+    color: colors.mutedText,
   },
 
-  editButton: {
-    height: 52,
-    backgroundColor: "#17324D",
-    borderRadius: 12,
-    marginHorizontal: 22,
-    marginTop: 17,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+ editButton: {
+  height: 52,
+  backgroundColor: colors.primaryDark,
+  borderRadius: 12,
+  marginHorizontal: 100, // Increased from 22
+  marginTop: 17,
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+},
 
   editButtonText: {
     color: "#FFFFFF",
@@ -348,11 +378,11 @@ const styles = StyleSheet.create({
 
   logoutButton: {
     height: 52,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#F1D5D5",
-    marginHorizontal: 22,
+    borderColor: colors.border,
+    marginHorizontal: 100,
     marginTop: 12,
     flexDirection: "row",
     justifyContent: "center",
@@ -360,7 +390,7 @@ const styles = StyleSheet.create({
   },
 
   logoutButtonText: {
-    color: "#D64545",
+    color: colors.danger,
     fontSize: 16,
     fontWeight: "700",
     marginLeft: 9,
@@ -368,9 +398,9 @@ const styles = StyleSheet.create({
 
   bottomNavigation: {
     height: 68,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.card,
     borderTopWidth: 1,
-    borderTopColor: "#EAECF0",
+    borderTopColor: colors.secondarySurface,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
@@ -384,12 +414,12 @@ const styles = StyleSheet.create({
 
   navText: {
     fontSize: 11,
-    color: "#9296A4",
+    color: colors.secondaryText,
     marginTop: 4,
   },
 
   activeNavText: {
-    color: "#17324D",
+    color: colors.text,
     fontWeight: "700",
   },
 });

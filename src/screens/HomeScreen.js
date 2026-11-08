@@ -1,49 +1,68 @@
 
 import React from "react";
-import {
-  ScrollView,
-  Text,
-  StyleSheet,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-
+import {ScrollView,Text,StyleSheet,View,TextInput,TouchableOpacity,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function HomeScreen({ navigation }) {
   const { profile } = useAuth();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   return (
-    <View style={styles.screen}>
+    <View
+      style={[
+        styles.screen,
+        { backgroundColor: colors.background },
+      ]}
+    >
       <ScrollView contentContainerStyle={styles.container}>
 
         {/* Greeting */}
-        <Text style={styles.greeting}>
-          Hello, {profile?.name || "Student"} 👋
+        <Text
+          style={[
+            styles.greeting,
+            { color: colors.text },
+          ]}
+        >
+          Kuzuzangpola, {profile?.name || "Student"} 👋
         </Text>
 
-        <Text style={styles.info}>
+        <Text
+          style={[
+            styles.info,
+            { color: colors.secondaryText },
+          ]}
+        >
           Where is your next classroom?
         </Text>
 
         {/* Search Bar */}
         <TouchableOpacity
-          style={styles.searchContainer}
+          style={[
+            styles.searchContainer,
+            {
+              backgroundColor: colors.card,
+              borderColor: colors.border,
+            },
+          ]}
           onPress={() => navigation.navigate("Search")}
           activeOpacity={0.8}
         >
           <Ionicons
             name="search-outline"
             size={20}
-            color="#9296C4"
+            color={colors.icon}
           />
 
           <TextInput
-            style={styles.searchInput}
+            style={[
+              styles.searchInput,
+              { color: colors.text },
+            ]}
             placeholder="Search classroom or building..."
-            placeholderTextColor="#98A2B3"
+            placeholderTextColor={colors.placeholder}
             editable={false}
             pointerEvents="none"
           />
@@ -54,34 +73,56 @@ export default function HomeScreen({ navigation }) {
 
           {/* Find Classroom */}
           <TouchableOpacity
-            style={styles.card}
+            style={[
+              styles.card,
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+              },
+            ]}
             onPress={() => navigation.navigate("Search")}
             activeOpacity={0.7}
           >
             <Ionicons
               name="search-outline"
               size={32}
-              color="#9296C4"
+              color={colors.icon}
             />
 
-            <Text style={styles.cardTitle}>
+            <Text
+              style={[
+                styles.cardTitle,
+                { color: colors.text },
+              ]}
+            >
               Find Classroom
             </Text>
           </TouchableOpacity>
 
           {/* Campus Map */}
           <TouchableOpacity
-            style={styles.card}
+            style={[
+              styles.card,
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+              },
+            ]}
             onPress={() => navigation.navigate("Map")}
             activeOpacity={0.7}
           >
             <Ionicons
               name="map-outline"
               size={32}
-              color="#9296C4"
+              color={colors.icon}
             />
 
-            <Text style={styles.cardTitle}>
+            <Text
+              style={[
+                styles.cardTitle,
+                { color: colors.text },
+              ]}
+            >
               Campus Map
             </Text>
           </TouchableOpacity>
@@ -90,17 +131,28 @@ export default function HomeScreen({ navigation }) {
 
         {/* Buildings Card */}
         <TouchableOpacity
-          style={styles.buildingCard}
+          style={[
+            styles.buildingCard,
+            {
+              backgroundColor: colors.card,
+              borderColor: colors.border,
+            },
+          ]}
           onPress={() => navigation.navigate("Buildings")}
           activeOpacity={0.7}
         >
           <Ionicons
             name="business-outline"
             size={32}
-            color="#9296C4"
+            color={colors.icon}
           />
 
-          <Text style={styles.cardTitle}>
+          <Text
+            style={[
+              styles.cardTitle,
+              { color: colors.text },
+            ]}
+          >
             Buildings
           </Text>
         </TouchableOpacity>
@@ -108,7 +160,10 @@ export default function HomeScreen({ navigation }) {
         {/* Admin Button */}
         {profile?.role === "admin" && (
           <TouchableOpacity
-            style={styles.adminButton}
+            style={[
+              styles.adminButton,
+              { backgroundColor: colors.primary },
+            ]}
             onPress={() => navigation.navigate("Admin")}
           >
             <Text style={styles.adminText}>
@@ -120,14 +175,27 @@ export default function HomeScreen({ navigation }) {
       </ScrollView>
 
       {/* Bottom Navigation Bar */}
-      <View style={styles.bottomNav}>
+      <View
+        style={[
+          styles.bottomNav,
+          {
+            backgroundColor: colors.tabBar,
+            borderTopColor: colors.border,
+          },
+        ]}
+      >
 
         {/* Home */}
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => navigation.navigate("Home")}
         >
-          <View style={styles.activeIcon}>
+          <View
+            style={[
+              styles.activeIcon,
+              { backgroundColor: colors.primary },
+            ]}
+          >
             <Ionicons
               name="home"
               size={20}
@@ -135,7 +203,12 @@ export default function HomeScreen({ navigation }) {
             />
           </View>
 
-          <Text style={styles.activeLabel}>
+          <Text
+            style={[
+              styles.activeLabel,
+              { color: colors.primary },
+            ]}
+          >
             Home
           </Text>
         </TouchableOpacity>
@@ -148,10 +221,15 @@ export default function HomeScreen({ navigation }) {
           <Ionicons
             name="location"
             size={22}
-            color="#667085"
+            color={colors.secondaryText}
           />
 
-          <Text style={styles.navLabel}>
+          <Text
+            style={[
+              styles.navLabel,
+              { color: colors.secondaryText },
+            ]}
+          >
             Map
           </Text>
         </TouchableOpacity>
@@ -164,10 +242,15 @@ export default function HomeScreen({ navigation }) {
           <Ionicons
             name="person"
             size={21}
-            color="#667085"
+            color={colors.secondaryText}
           />
 
-          <Text style={styles.navLabel}>
+          <Text
+            style={[
+              styles.navLabel,
+              { color: colors.secondaryText },
+            ]}
+          >
             Profile
           </Text>
         </TouchableOpacity>
@@ -177,11 +260,10 @@ export default function HomeScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
 
   screen: {
     flex: 1,
-    backgroundColor: "#F6F8FA",
   },
 
   container: {
@@ -193,12 +275,10 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 27,
     fontWeight: "800",
-    color: "#17324D",
     marginBottom: 8,
   },
 
   info: {
-    color: "#667085",
     fontSize: 15,
     marginBottom: 25,
   },
@@ -206,11 +286,11 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     paddingHorizontal: 15,
     height: 52,
     marginBottom: 20,
+    borderWidth: 1,
     elevation: 2,
   },
 
@@ -218,7 +298,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     fontSize: 14,
-    color: "#17324D",
   },
 
   cardContainer: {
@@ -231,19 +310,19 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     height: 145,
-    backgroundColor: "#FFFFFF",
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 1,
     elevation: 3,
   },
 
   buildingCard: {
     height: 100,
-    backgroundColor: "#FFFFFF",
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 1,
     elevation: 3,
     marginBottom: 20,
   },
@@ -251,12 +330,10 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#667085",
     marginTop: 12,
   },
 
   adminButton: {
-    backgroundColor: "#9296C4",
     padding: 15,
     borderRadius: 12,
     alignItems: "center",
@@ -268,26 +345,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
-  logoutButton: {
-    padding: 14,
-    alignItems: "center",
-  },
-
-  logoutText: {
-    color: "#667085",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-
-  // Bottom Navigation
   bottomNav: {
     height: 75,
-    backgroundColor: "#FFFFFF",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     borderTopWidth: 1,
-    borderTopColor: "#E4E7EC",
     paddingBottom: 5,
   },
 
@@ -299,7 +362,6 @@ const styles = StyleSheet.create({
   },
 
   activeIcon: {
-    backgroundColor: "#9296C4",
     paddingHorizontal: 17,
     paddingVertical: 5,
     borderRadius: 20,
@@ -307,13 +369,11 @@ const styles = StyleSheet.create({
 
   navLabel: {
     fontSize: 11,
-    color: "#667085",
   },
 
   activeLabel: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#9296C4",
   },
 
 });
