@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+
 import {
   Alert,
   ScrollView,
@@ -7,10 +8,11 @@ import {
   TextInput,
   StyleSheet,
 } from "react-native";
+
 import PrimaryButton from "../components/PrimaryButton";
 import { registerUser } from "../services/authService";
 
-export default function RegisterScreen() {
+export default function RegisterScreen({ navigation }) {
   const [form, setForm] = useState({
     name: "",
     studentId: "",
@@ -22,7 +24,10 @@ export default function RegisterScreen() {
   const [busy, setBusy] = useState(false);
 
   const set = (key, value) => {
-    setForm((old) => ({ ...old, [key]: value }));
+    setForm((old) => ({
+      ...old,
+      [key]: value,
+    }));
   };
 
   async function submit() {
@@ -42,9 +47,33 @@ export default function RegisterScreen() {
 
     try {
       setBusy(true);
+
       await registerUser(form);
+
+      navigation.reset({index: 0, routes: [{ name: "Login" }]});
+
+      // Alert.alert(
+      //   "Registration successful!",
+      //   // "Your ClassFind account has been created. Please log in using your email or student ID and password.",
+      //   // [
+      //   //   {
+      //   //     text: "Go to Login",
+      //   //     onPress: () => {
+      //   //       navigation.reset({
+      //   //         index: 0,
+      //   //         routes: [{ name: "Login" }],
+      //   //       });
+      //   //     },
+      //   //   },
+      //   // ],
+      //   // { cancelable: false }
+      // );
+
     } catch (e) {
-      Alert.alert("Registration failed", e.message);
+      Alert.alert(
+        "Registration failed",
+        e.message
+      );
     } finally {
       setBusy(false);
     }
@@ -55,7 +84,9 @@ export default function RegisterScreen() {
       contentContainerStyle={styles.container}
       keyboardShouldPersistTaps="handled"
     >
-      <Text style={styles.heading}>Create your account</Text>
+      <Text style={styles.heading}>
+        Create your account
+      </Text>
 
       <TextInput
         style={styles.input}
@@ -115,12 +146,14 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: "#F6F8FA",
   },
+
   heading: {
     fontSize: 25,
     fontWeight: "800",
     color: "#17324D",
     marginBottom: 20,
   },
+
   input: {
     backgroundColor: "#FFFFFF",
     borderWidth: 1,

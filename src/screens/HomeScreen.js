@@ -1,16 +1,22 @@
 
 import React from "react";
-import {Alert,ScrollView,Text,StyleSheet,View,TextInput,TouchableOpacity,} from "react-native";
+import {
+  ScrollView,
+  Text,
+  StyleSheet,
+  View,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
-import { logoutUser } from "../services/authService";
 
 export default function HomeScreen({ navigation }) {
   const { profile } = useAuth();
 
   return (
     <View style={styles.screen}>
-
       <ScrollView contentContainerStyle={styles.container}>
 
         {/* Greeting */}
@@ -28,7 +34,11 @@ export default function HomeScreen({ navigation }) {
           onPress={() => navigation.navigate("Search")}
           activeOpacity={0.8}
         >
-          <Ionicons name="search-outline" size={20} color="#9296C4" />
+          <Ionicons
+            name="search-outline"
+            size={20}
+            color="#9296C4"
+          />
 
           <TextInput
             style={styles.searchInput}
@@ -42,6 +52,7 @@ export default function HomeScreen({ navigation }) {
         {/* Feature Cards */}
         <View style={styles.cardContainer}>
 
+          {/* Find Classroom */}
           <TouchableOpacity
             style={styles.card}
             onPress={() => navigation.navigate("Search")}
@@ -52,11 +63,13 @@ export default function HomeScreen({ navigation }) {
               size={32}
               color="#9296C4"
             />
+
             <Text style={styles.cardTitle}>
               Find Classroom
             </Text>
           </TouchableOpacity>
 
+          {/* Campus Map */}
           <TouchableOpacity
             style={styles.card}
             onPress={() => navigation.navigate("Map")}
@@ -67,6 +80,7 @@ export default function HomeScreen({ navigation }) {
               size={32}
               color="#9296C4"
             />
+
             <Text style={styles.cardTitle}>
               Campus Map
             </Text>
@@ -77,7 +91,7 @@ export default function HomeScreen({ navigation }) {
         {/* Buildings Card */}
         <TouchableOpacity
           style={styles.buildingCard}
-          onPress={() => navigation.navigate("Map")}
+          onPress={() => navigation.navigate("Buildings")}
           activeOpacity={0.7}
         >
           <Ionicons
@@ -85,6 +99,7 @@ export default function HomeScreen({ navigation }) {
             size={32}
             color="#9296C4"
           />
+
           <Text style={styles.cardTitle}>
             Buildings
           </Text>
@@ -102,23 +117,6 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         )}
 
-        {/* Logout */}
-        {/* <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={() =>
-            Alert.alert("Log out", "Are you sure?", [
-              { text: "Cancel", style: "cancel" },
-              {
-                text: "Log out",
-                style: "destructive",
-                onPress: logoutUser,
-              },
-            ])
-          }
-        >
-          <Text style={styles.logoutText}>Log out</Text>
-        </TouchableOpacity> */}
-
       </ScrollView>
 
       {/* Bottom Navigation Bar */}
@@ -130,9 +128,16 @@ export default function HomeScreen({ navigation }) {
           onPress={() => navigation.navigate("Home")}
         >
           <View style={styles.activeIcon}>
-            <Ionicons name="home" size={20} color="#FFFFFF" />
+            <Ionicons
+              name="home"
+              size={20}
+              color="#FFFFFF"
+            />
           </View>
-          <Text style={styles.activeLabel}>Home</Text>
+
+          <Text style={styles.activeLabel}>
+            Home
+          </Text>
         </TouchableOpacity>
 
         {/* Map */}
@@ -145,7 +150,10 @@ export default function HomeScreen({ navigation }) {
             size={22}
             color="#667085"
           />
-          <Text style={styles.navLabel}>Map</Text>
+
+          <Text style={styles.navLabel}>
+            Map
+          </Text>
         </TouchableOpacity>
 
         {/* Profile */}
@@ -158,11 +166,13 @@ export default function HomeScreen({ navigation }) {
             size={21}
             color="#667085"
           />
-          <Text style={styles.navLabel}>Profile</Text>
+
+          <Text style={styles.navLabel}>
+            Profile
+          </Text>
         </TouchableOpacity>
 
       </View>
-
     </View>
   );
 }
