@@ -1,12 +1,3 @@
-// IMPORTANT: Replace these sample coordinates with GPS coordinates collected at CST.
-// Do not submit the app with guessed building coordinates.
-// export const CAMPUS_CENTER = {
-//   latitude: 0, // TODO: replace with verified CST campus latitude
-//   longitude: 0, // TODO: replace with verified CST campus longitude
-//   latitudeDelta: 0.004,
-//   longitudeDelta: 0.004,
-// };
-
 export const CAMPUS_CENTER = {
   latitude: 26.85113,
   longitude: 89.39424,
@@ -14,9 +5,7 @@ export const CAMPUS_CENTER = {
   longitudeDelta: 0.004,
 };
 
-// Add accurate coordinates for each building/classroom entrance or destination.
-// Keep classroom floor information separate; outdoor GPS cannot locate indoor floors.
-
+// need to Add accurate coordinates for each building/classroom entrance or destination.
 export const INITIAL_CLASSROOMS = [
   // Academic Block - Ground Floor
   ...["CR1", "CR2", "CR3", "CR4", "CR5", "CR6", "CR7", "CR8", "CR9"].map(
@@ -120,9 +109,7 @@ export const INITIAL_CLASSROOMS = [
 ];
 
 
-// Verified campus building coordinates
-// CST campus building coordinates
-// CST campus building coordinates
+// Verified CST campus building coordinates
 export const CAMPUS_BUILDINGS = [
   {
     id: "academic",

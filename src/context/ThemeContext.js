@@ -1,16 +1,7 @@
 
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-} from "react";
-
+import React, {createContext,useContext,useMemo,} from "react";
 import { useColorScheme } from "react-native";
-
-import {
-  DefaultTheme,
-  DarkTheme,
-} from "@react-navigation/native";
+import { DefaultTheme, DarkTheme,} from "@react-navigation/native";
 
 const ThemeContext = createContext(null);
 
@@ -136,7 +127,7 @@ const darkColors = {
 
 export function ThemeProvider({ children }) {
 
-  // Automatically follow device appearance
+  // Automatically follow device mode (light/dark) using useColorScheme hook
   const systemColorScheme = useColorScheme();
 
   const isDark = systemColorScheme === "dark";

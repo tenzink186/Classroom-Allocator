@@ -1,29 +1,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
-
-import {
-  Alert,
-  Linking,
-  Text,
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
-} from "react-native";
-
+import {Alert,Linking,Text,View,StyleSheet,ActivityIndicator,TouchableOpacity,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
 import MapView, { Marker } from "react-native-maps";
-
 import PrimaryButton from "../components/PrimaryButton";
-
-import {
-  CAMPUS_CENTER,
-  CAMPUS_BUILDINGS,
-} from "../config/campus";
-
+import {CAMPUS_CENTER,CAMPUS_BUILDINGS,} from "../config/campus";
 import { getCurrentLocation } from "../services/locationService";
-
 import { useTheme } from "../context/ThemeContext";
 
 export default function MapScreen({ route, navigation }) {
@@ -238,11 +220,6 @@ export default function MapScreen({ route, navigation }) {
             onPress={directions}
           />
         )}
-
-        {/* <Text style={styles.hint}>
-          Walking directions open in Google Maps.
-          Indoor classroom floors are shown in classroom details.
-        </Text> */}
 
       </View>
 

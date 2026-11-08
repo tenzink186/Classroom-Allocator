@@ -1,8 +1,8 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
-
 import { useTheme } from "../context/ThemeContext";
+
 export default function ClassroomDetailsScreen({ route, navigation }) {
   const { colors } = useTheme();
   const styles = createStyles(colors);

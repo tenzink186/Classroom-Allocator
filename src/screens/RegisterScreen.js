@@ -1,9 +1,9 @@
-
 import React, { useState } from "react";
-import {Alert,ScrollView,Text,TextInput,StyleSheet,} from "react-native";
+import {Alert,ScrollView,Text,TextInput,StyleSheet,View} from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 import { registerUser } from "../services/authService";
 import { useTheme } from "../context/ThemeContext";
+import { Picker } from "@react-native-picker/picker";
 
 export default function RegisterScreen({ navigation }) {
   const { colors } = useTheme();
@@ -33,6 +33,7 @@ export default function RegisterScreen({ navigation }) {
       );
     }
 
+    // Validate student ID format: must be exactly 8 digits and start with 022
     if (!/^022\d{5}$/.test(form.studentId)) {
       return Alert.alert(
         "Invalid Student ID",
@@ -51,7 +52,7 @@ export default function RegisterScreen({ navigation }) {
       setBusy(true);
 
       await registerUser(form);
-
+      //after registration, reset navigation stack to prevent going back to Register screen and goes to Login screen
       navigation.reset({index: 0, routes: [{ name: "Login" }]});
 
     } catch (e) {
@@ -91,15 +92,26 @@ export default function RegisterScreen({ navigation }) {
         onChangeText={(v) => set("studentId", v)}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Programme"
-        placeholderTextColor={colors.placeholder}
-        autoCapitalize="words"
-        value={form.course}
-        onChangeText={(v) => set("course", v)}
-      />
-
+      <View style={styles.dropdown}>
+        <Picker
+          selectedValue={form.course}
+          onValueChange={(value) => set("course", value)}
+          style={{ color: colors.text }}
+          dropdownIconColor={colors.text}
+      >
+        <Picker.Item label="Programme" value="" />
+        <Picker.Item label="BE Information Technology" value="BE Information Technology" />
+        <Picker.Item label="BE Civil Engineering" value="BE Civil Engineering" />
+        <Picker.Item label="BE Electrical Engineering" value="BE Electrical Engineering" />
+        <Picker.Item label="BE Electronics and Communication Engineering" value="BE Electronics and Communication Engineering" />
+        <Picker.Item label="BE Mechanical Engineering" value="BE Mechanical Engineering" />
+        <Picker.Item label="Architecture" value="Architecture" />
+        <Picker.Item label="BE Geology" value="BE Geology" />
+        <Picker.Item label="BE Water Resources Engineering" value="BE Water Resources Engineering" />
+        <Picker.Item label="BE Instrumentation and Control" value="BE Instrumentation and Control" />
+      </Picker>
+    </View>
+      
       <TextInput
         style={styles.input}
         placeholder="Email address"
@@ -120,11 +132,9 @@ export default function RegisterScreen({ navigation }) {
         onChangeText={(v) => set("password", v)}
       />
 
-      <PrimaryButton
-        title="Create account"
-        onPress={submit}
-        loading={busy}
-      />
+      <View style={styles.buttonContainer}>
+        <PrimaryButton title="Create account" onPress={submit} loading={busy}/>
+      </View>
     </ScrollView>
   );
 }
@@ -152,5 +162,18 @@ const createStyles = (colors) => StyleSheet.create({
     padding: 14,
     marginVertical: 7,
     fontSize: 15,
+  },
+  buttonContainer: {
+    width: "50%",
+    alignSelf: "left",
+    marginTop: 5,
+  },
+  dropdown: {
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 10,
+    marginVertical: 7,
+    justifyContent: "center",
   },
 });

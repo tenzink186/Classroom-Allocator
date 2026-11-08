@@ -1,22 +1,10 @@
 
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  orderBy,
-  query,
-  updateDoc,
-} from "firebase/firestore";
-
+import {addDoc,collection,deleteDoc,doc,getDocs,orderBy,query,updateDoc,} from "firebase/firestore";
 import { db } from "../config/firebase";
 import { INITIAL_CLASSROOMS } from "../config/campus";
 
 const classroomsRef = collection(db, "classrooms");
 
-// Get classrooms from Firebase if records exist.
-// Otherwise, use the local classroom data in campus.js.
 export async function getClassrooms() {
   try {
     const q = query(classroomsRef, orderBy("classroomNumber"));

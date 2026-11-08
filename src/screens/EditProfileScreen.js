@@ -1,24 +1,13 @@
 
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-
+import {ActivityIndicator,Alert,Image,ScrollView,StyleSheet,Text,TextInput,TouchableOpacity,View,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-
 import { useAuth } from "../context/AuthContext";
 import { uploadProfilePicture } from "../services/cloudinaryService";
-
 import { useTheme } from "../context/ThemeContext";
+import { Picker } from "@react-native-picker/picker";
+
 export default function EditProfileScreen({ navigation }) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
@@ -172,13 +161,6 @@ export default function EditProfileScreen({ navigation }) {
         <Text style={styles.backText}>Back to Profile</Text>
       </TouchableOpacity>
 
-      <Text style={styles.heading}></Text>
-
-      {/* <Text style={styles.subtitle}>
-        Update your personal information
-      </Text> */}
-
-      {/* Profile Picture */}
       <View style={styles.pictureSection}>
         <TouchableOpacity
           style={styles.avatarContainer}
@@ -226,15 +208,28 @@ export default function EditProfileScreen({ navigation }) {
           editable={!saving}
         />
 
-        <Text style={styles.label}>Programme </Text>
+       <Text style={styles.label}>Programme</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your programme"
-          value={course}
-          onChangeText={setCourse}
-          editable={!saving}
-        />
+        <View style={styles.dropdown}>
+          <Picker
+            selectedValue={course}
+            onValueChange={(value) => setCourse(value)}
+            style={{ color: colors.text }}
+            dropdownIconColor={colors.text}
+            enabled={!saving}
+          >
+            <Picker.Item label="Select Programme" value="" />
+            <Picker.Item label="BE Information Technology" value="BE Information Technology" />
+            <Picker.Item label="BE Civil Engineering" value="BE Civil Engineering" />
+            <Picker.Item label="BE Electrical Engineering" value="BE Electrical Engineering" />
+            <Picker.Item label="BE Electronics and Communication Engineering" value="BE Electronics and Communication Engineering" />
+            <Picker.Item label="BE Mechanical Engineering" value="BE Mechanical Engineering" />
+            <Picker.Item label="Architecture" value="Architecture" />
+            <Picker.Item label="BE Geology" value="BE Geology" />
+            <Picker.Item label="BE Water Resources Engineering" value="BE Water Resources Engineering" />
+            <Picker.Item label="BE Instrumentation and Control" value="BE Instrumentation and Control" />
+          </Picker>
+        </View>
 
         <Text style={styles.label}>Student ID</Text>
 
@@ -383,6 +378,14 @@ const createStyles = (colors) => StyleSheet.create({
     fontSize: 15,
     color: colors.mutedText,
   },
+   dropdown: {
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 10,
+    marginVertical: 7,
+    justifyContent: "center",
+  },
   readOnly: {
     backgroundColor: colors.secondarySurface,
     color: colors.secondaryText,
@@ -396,6 +399,7 @@ const createStyles = (colors) => StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+
   },
   disabledButton: {
     opacity: 0.65,

@@ -1,20 +1,11 @@
 
 import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Alert,
-} from "react-native";
-
+import {View,Text,Image,TouchableOpacity,StyleSheet,ScrollView,Alert,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import { logoutUser } from "../services/authService";
-
 import { useTheme } from "../context/ThemeContext";
+
 export default function ProfileScreen({ navigation }) {
   const { colors, isDark } = useTheme();
   const styles = createStyles(colors);
@@ -53,14 +44,7 @@ export default function ProfileScreen({ navigation }) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          {/* <Text style={styles.headerTitle}></Text>
-          <Text style={styles.headerSubtitle}>
-            View your personal information
-          </Text> */}
-        </View>
-
+       
         {/* Profile Picture and Name */}
         <View style={styles.profileSection}>
           {profile?.profilePicUrl ? (
@@ -362,7 +346,7 @@ const createStyles = (colors) => StyleSheet.create({
   height: 52,
   backgroundColor: colors.primaryDark,
   borderRadius: 12,
-  marginHorizontal: 100, // Increased from 22
+  marginHorizontal: 100, 
   marginTop: 17,
   flexDirection: "row",
   justifyContent: "center",

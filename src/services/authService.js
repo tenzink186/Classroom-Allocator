@@ -1,21 +1,6 @@
 
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  sendPasswordResetEmail,
-} from "firebase/auth";
-
-import {
-  doc,
-  setDoc,
-  getDoc,
-  query,
-  collection,
-  where,
-  getDocs,
-} from "firebase/firestore";
-
+import {createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,sendPasswordResetEmail,} from "firebase/auth";
+import {doc,setDoc,getDoc,query,collection,where,getDocs,} from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 
 // REGISTER NEW STUDENT

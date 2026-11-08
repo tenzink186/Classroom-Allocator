@@ -1,28 +1,10 @@
 
 import React, { useEffect, useMemo, useState } from "react";
-
-import {
-  Alert,
-  FlatList,
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-
+import {Alert,FlatList,Text,TextInput,View,StyleSheet,TouchableOpacity,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
 import ClassroomCard from "../components/ClassroomCard";
-
 import { getClassrooms } from "../services/classroomService";
-
-import {
-  saveRecentSearch,
-  getRecentSearches,
-  clearRecentSearches,
-} from "../services/recentSearchService";
-
+import {saveRecentSearch,getRecentSearches,clearRecentSearches,} from "../services/recentSearchService";
 import { useTheme } from "../context/ThemeContext";
 
 export default function SearchScreen({ navigation }) {
