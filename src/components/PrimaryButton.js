@@ -1,7 +1,7 @@
 import React from "react";
 import { Pressable, Text, StyleSheet, ActivityIndicator } from "react-native";
-
 import { useTheme } from "../context/ThemeContext";
+
 export default function PrimaryButton({ title, onPress, loading = false, secondary = false }) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
